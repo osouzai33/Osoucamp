@@ -1,0 +1,1 @@
+ ./MyProject/Bootcamp/Mongo/mongodb/bin/mongod --dbpath ~/MyProject/Bootcamp/Mongo/data/db

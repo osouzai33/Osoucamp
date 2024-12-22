@@ -2,7 +2,12 @@
 <div class="row">
   <h1 class="text-center">キャンプ場の編集</h1>
   <div class="offset-3 col-6">
-    <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST">
+    <form
+      action="/campgrounds/<%= campground._id %>?_method=PUT"
+      method="POST"
+      class="validated-form"
+      novalidate
+    >
       <div class="mb-3">
         <label class="form-label" for="title">タイトル</label>
         <input
@@ -11,7 +16,9 @@
           name="campground[title]"
           id="title"
           value="<%= campground.title %>"
+          required
         />
+        <div class="valid-feedback">OK!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="location">場所</label>
@@ -21,12 +28,15 @@
           name="campground[location]"
           id="location"
           value="<%= campground.location %>"
+          required
         />
+        <div class="valid-feedback">OK!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="image">画像URL</label> <input
         class="form-control" type="text" name="campground"image]" id="image"
-        value="<%= campground.image %>"/>
+        value="<%= campground.image %>" required/>
+        <div class="valid-feedback">OK!</div>
       </div>
       <div class="mb-3">
         <label class="form-label" for="price">価格</label>
@@ -41,7 +51,9 @@
             aria-describedby="price-label"
             name="campground[price]"
             value="<%= campground.price %>"
+            required
           />
+          <div class="valid-feedback">OK!</div>
         </div>
       </div>
 
@@ -52,9 +64,11 @@
           type="text"
           name="campground[description]"
           id="description"
+          required
         >
 <%= campground.description %></textarea
         >
+        <div class="valid-feedback">OK!</div>
       </div>
       <div class="mb-3">
         <button class="btn btn-info">編集する</button>

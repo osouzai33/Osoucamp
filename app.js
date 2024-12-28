@@ -18,7 +18,7 @@ const UserRoutes = require("./routes/users");
 mongoose
     .connect("mongodb://localhost:27017/osou-camp", {
         useNewUrlParser: true,
-        useUnifiedTopology: true,
+        useUnifiedTopology: false,
     })
     .then(() => {
         console.log("MongoDB 接続成功");

@@ -35,8 +35,9 @@ router.post(
     }),
     (req, res) => {
         req.flash("success", "おかえりなさい！");
-        console.log(req.session.returnTo);
+        console.log("session return to", req.session.returnTo);
         const redirectUrl = req.session.returnTo || "/campgrounds";
+        console.log("Redirect to ".redirectUrl);
         res.redirect(redirectUrl);
     }
 );

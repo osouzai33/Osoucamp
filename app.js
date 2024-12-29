@@ -18,7 +18,7 @@ const UserRoutes = require("./routes/users");
 mongoose
     .connect("mongodb://localhost:27017/osou-camp", {
         useNewUrlParser: true,
-        useUnifiedTopology: false,
+        useUnifiedTopology: true,
     })
     .then(() => {
         console.log("MongoDB 接続成功");
@@ -44,7 +44,7 @@ const sessionConfig = {
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        httpOnly: true,
+        // httpOnly: true,
     },
 };
 app.use(session(sessionConfig));

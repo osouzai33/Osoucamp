@@ -28,9 +28,22 @@ const seedDB = async () => {
             author: "676c399ab7034be995050716",
             location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`,
             title: `${sample(descriptors)}・${sample(places)}`,
-            image: "https://picsum.photos/250/200 ",
+            images: [
+                {
+                    url: "https://res.cloudinary.com/dp6zctsvy/image/upload/v1735463244/samples/landscapes/nature-mountains.jpg",
+                    filename: "samples/landscapes/nature-mountains",
+                },
+                {
+                    url: "https://res.cloudinary.com/dp6zctsvy/image/upload/v1735463241/sample.jpg",
+                    filename: "sample",
+                },
+                {
+                    url: "https://res.cloudinary.com/dp6zctsvy/image/upload/v1735463243/samples/landscapes/beach-boat.jpg",
+                    filename: "samples/landscapes/beach-boat",
+                },
+            ],
             description:
-                "キャンプとは、自然に身を委ねることである。世間に揉まれている日常から自分を解き放つ場である。そんなひと時をぜひここで。",
+                "日々の喧騒を離れ、自然の中で心を解き放つひとときを。木々のざわめきや鳥のさえずりに耳を傾けながら、静かな時間を過ごすことができます。家族や仲間と焚き火を囲むひとときは、かけがえのない思い出に。初心者でも安心の設備を完備。ここでしか味わえない自然との一体感を、ぜひ体験してください。",
             price,
         });
         await campground.save();

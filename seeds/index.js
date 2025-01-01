@@ -28,6 +28,13 @@ const seedDB = async () => {
             author: "676c399ab7034be995050716",
             location: `${cities[randomCityIndex].prefecture}${cities[randomCityIndex].city}`,
             title: `${sample(descriptors)}・${sample(places)}`,
+            geometry: {
+                type: "Point",
+                coordinates: [
+                    cities[randomCityIndex].longitude,
+                    cities[randomCityIndex].latitude,
+                ],
+            },
             images: [
                 {
                     url: "https://res.cloudinary.com/dp6zctsvy/image/upload/v1735463244/samples/landscapes/nature-mountains.jpg",

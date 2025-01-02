@@ -12,6 +12,10 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 
+const mongoSanitize = require("express-mongo-sanitize");
+const helmet = require("helmet");
+const MongoStore = require("connect-mongo");
+
 const methodOverride = require("method-override");
 const ExpressError = require("./utils/ExpressError");
 
@@ -19,11 +23,9 @@ const CampgroundRoutes = require("./routes/campgrounds");
 const ReviewRoutes = require("./routes/reviews");
 const UserRoutes = require("./routes/users");
 
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/osou-camp";
 mongoose
-    .connect("mongodb://localhost:27017/osou-camp", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    })
+    .connect(dbUrl)
     .then(() => {
         console.log("MongoDB 接続成功");
     })
@@ -41,18 +43,62 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
+app.use(mongoSanitize());
+
+const secret = process.env.SECRET || "mysecret";
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret: {
+        secret: secret,
+    },
+    touchAfter: 24 * 60 * 60,
+});
+
+store.on("error", function (e) {
+    console.log("SESSION STORE ERROR", e);
+});
 
 const sessionConfig = {
-    secret: "mysecret",
+    store,
+    name: "session",
+    secret: secret,
     resave: false,
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        // httpOnly: true,
+        httpOnly: true,
+        // secure: true,
     },
 };
 app.use(session(sessionConfig));
 app.use(flash());
+app.use(helmet());
+
+const scriptSrcUrls = ["https://api.mapbox.com", "https://cdn.jsdelivr.net"];
+const styleSrcUrls = ["https://api.mapbox.com", "https://cdn.jsdelivr.net"];
+const connectSrcUrls = [
+    "https://api.mapbox.com",
+    "https://*.tiles.mapbox.com",
+    "https://events.mapbox.com",
+];
+const fontSrcUrls = [];
+const imgSrc = ["https://res.cloudinary.com", "https://images.unsplash.com"];
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: ["'self'", "blob:", "data:", ...imgSrc],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+    })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -61,7 +107,6 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use((req, res, next) => {
-    console.log(req.session);
     res.locals.currentUser = req.user;
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");

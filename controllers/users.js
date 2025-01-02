@@ -26,10 +26,18 @@ module.exports.renderLogin = (req, res) => {
 
 module.exports.login = (req, res) => {
     req.flash("success", "おかえりなさい！");
-    console.log("session return to", req.session.returnTo);
-    const redirectUrl = req.session.returnTo || "/campgrounds";
-    console.log("Redirect to ".redirectUrl);
-    res.redirect(redirectUrl);
+    console.log(req.session);
+    // console.log("session return to", req.session.returnTo);
+    req.session.save((err) => {
+        if (err) {
+            console.log("セッションの保存中にエラーが発生しました", err);
+            return res.redirect("/campgrounds");
+        }
+        const redirectUrl = req.session.returnTo || "/campgrounds";
+        delete req.session.returnTo;
+        console.log("Redirect to ".redirectUrl);
+        res.redirect(redirectUrl);
+    });
 };
 
 module.exports.logout = (req, res, next) => {

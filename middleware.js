@@ -2,12 +2,15 @@ const ExpressError = require("./utils/ExpressError");
 const { campgroundSchema, reviewSchema } = require("./schema");
 const Campground = require("./models/campground");
 const Review = require("./models/review");
-module.exports.isLoggedIn = (req, res, next) => {
+module.exports.isLoggedIn = async (req, res, next) => {
     if (!req.isAuthenticated()) {
-        console.log("Middleware", req.originalUrl);
+        console.log("Middleware", req.session);
         req.session.returnTo = req.originalUrl;
+        await req.session.save((err) => {
+            if (err) console.log(err);
+        });
         req.flash("error", "ログインしてください");
-        console.log("Middleware After", req.session.returnTo);
+        console.log("Middleware After", req.session);
         return res.redirect("/login");
     }
     next();

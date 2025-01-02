@@ -25,9 +25,7 @@ const UserRoutes = require("./routes/users");
 
 const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/osou-camp";
 mongoose
-    .connect(
-        "mongodb+srv://osoucampzai:jW1ki0ll0rvaPDOF@osoucampcluster.4qrml.mongodb.net/osoucamp"
-    )
+    .connect(dbUrl)
     .then(() => {
         console.log("MongoDB 接続成功");
     })
